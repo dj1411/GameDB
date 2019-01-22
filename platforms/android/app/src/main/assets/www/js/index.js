@@ -40,6 +40,37 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
+        
+//        $.ajax({
+//            url: "https://api-v3.igdb.com/headers/",
+//            type: "POST",
+//            headers: { "user-key" : "c1afd6ff14af088c64925426a2ca75b5" },
+//            data: '{ "api_header" : { "header" : "Access-Control-Allow-Origin", "value" : "localhost:8000" } }',
+//            contentType: "application/json; charset=utf-8",
+//            dataType: "json",
+//            success: function(data, textStatus, jqXHR) {
+//                console.log(data);
+//            },
+//            error: function(jqXHR, textStatus, errorThrown) {
+//                alert("AJAX error");
+//            }
+//        });   
+        
+        $.ajax({
+            url:"https://api-v3.igdb.com/games/",
+            type:"POST",
+            data:'fields name; limit 10;',
+            contentType:"text/plain",
+            dataType:"text",
+            headers: { "user-key" : "c1afd6ff14af088c64925426a2ca75b5" },
+            success: function(data, textStatus, jqXHR) {
+                alert(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("AJAX error");
+            }
+        });         
+        
     }
 };
 
