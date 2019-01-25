@@ -27,7 +27,40 @@
 /* this is purely for setter apis */
 /* it is allowed to do some calculations */
 
+function Game(id, name) {
+    /* inheriting the signature elements */
+    this.id = id;
+    this.timestamp = moment();
+    this.isDeleted = false;
+    
+    /* own class elements */
+    this.name = name;    
+    this.start = null;
+    this.end = null;
+    this.playtime = null;
+}
+
+function Category(id, name) {
+    /* inheriting the signature elements */
+    this.id = id;
+    this.timestamp = moment();
+    this.isDeleted = false;
+    
+    /* own class elements */
+    this.name = name;
+    this.arrGame = new Array();
+}
+
 function Data() {
+    /* add default categories */
+    this.arrCategory = new Array();
+    this.arrCategory.push( new Category(0, "Completed") );
+    this.arrCategory.push( new Category(1, "In Progress") );
+    this.arrCategory.push( new Category(2, "In Queue") );
+    this.arrCategory.push( new Category(3, "Wishlist") );
+}
+
+function Config() {
 }
 
 function DB() {
@@ -35,7 +68,9 @@ function DB() {
     this.load();
     
     if(this.root.data == undefined || this.root.data == null || this.root.data === "") {
+        /* default fields */
         this.root.data = new Data();
+        this.root.config = new Config();
         this.save();
     }
 }
@@ -55,3 +90,33 @@ DB.prototype.save = function () {
     localStorage.setItem("db" + APP_NAME, JSON.stringify(this.root));
 }
 
+DB.prototype.addGame = function (idCategory, name) {
+    /* find an unique game id */
+    var idGame = 0;
+    while( ! this.root.data.arrCategory[idCategory].arrGame.every( function(game) {
+        return (game.id != idGame);
+    } ) ) {
+        idGame++;
+    }
+    
+    /* create a game object and append to the game array */
+    var game = new Game(idGame, name);
+    this.root.data.arrCategory[idCategory].arrGame.push(game);
+    
+    this.save();    
+}
+
+DB.prototype.endGame = function (idCategory, idGame, time) {
+    this.root.data.arrCategory[idCategory].arrGame[idGame].end = moment(time);
+    this.save();
+}
+
+DB.prototype.playtimeGame = function (idCategory, idGame, time) {
+    this.root.data.arrCategory[idCategory].arrGame[idGame].playtime = time;
+    this.save();
+}
+
+DB.prototype.startGame = function (idCategory, idGame, time) {
+    this.root.data.arrCategory[idCategory].arrGame[idGame].start = moment(time);
+    this.save();
+}

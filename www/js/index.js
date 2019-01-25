@@ -24,6 +24,7 @@
 
 /* global variables */
 var db = new DB();
+var idSelectedCategory = 1; // for the first version only "In Progress" category will be used
 
 function main() {
     /* set some defaults */
@@ -33,6 +34,8 @@ function main() {
     document.getElementById("divBody").innerText = ""; 
     ssInit();
 
+//    db.addGame(idSelectedCategory, "Skyrim");
+    
     /* use cordova plugins on android */
     if(navigator.userAgent.indexOf("Android") >= 0) {
         /* button click sound */
