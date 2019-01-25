@@ -1,77 +1,62 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
-    },
+/*******************************************************************************
+ * MIT License
+ * 
+ * Copyright (c) 2018 Jayanta Debnath
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *******************************************************************************/
 
-    // deviceready Event Handler
-    //
-    // Bind any cordova events here. Common events are:
-    // 'pause', 'resume', etc.
-    onDeviceReady: function() {
-        this.receivedEvent('deviceready');
-    },
+/* global variables */
+var db = new DB();
 
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+function main() {
+    /* set some defaults */
+    setStyle();
+    
+    /* removing dummy entries and display everything using js */
+    document.getElementById("divBody").innerText = ""; 
+    ssInit();
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
+    /* use cordova plugins on android */
+    if(navigator.userAgent.indexOf("Android") >= 0) {
+        /* button click sound */
+        nativeclick.watch(["mybutton1"]);
         
-//        $.ajax({
-//            url: "https://api-v3.igdb.com/headers/",
-//            type: "POST",
-//            headers: { "user-key" : "c1afd6ff14af088c64925426a2ca75b5" },
-//            data: '{ "api_header" : { "header" : "Access-Control-Allow-Origin", "value" : "localhost:8000" } }',
-//            contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            success: function(data, textStatus, jqXHR) {
-//                console.log(data);
-//            },
-//            error: function(jqXHR, textStatus, errorThrown) {
-//                alert("AJAX error");
-//            }
-//        });   
-        
-        $.ajax({
-            url:"https://api-v3.igdb.com/games/",
-            type:"POST",
-            data:'fields name; limit 10;',
-            contentType:"text/plain",
-            dataType:"text",
-            headers: { "user-key" : "c1afd6ff14af088c64925426a2ca75b5" },
-            success: function(data, textStatus, jqXHR) {
-                alert(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert("AJAX error");
-            }
-        });         
-        
+        /* button click vibration */
+        var arrButtons = document.getElementsByClassName("mybutton1");
+        for( var i=0; i<arrButtons.length; i++) {
+            arrButtons[i].addEventListener( "click", function() {
+                navigator.vibrate(20);
+            } );
+        }
     }
-};
+}
 
-app.initialize();
+function setStyle() {
+    /* set the app name and version */
+    document.title = APP_NAME;
+    document.getElementById("titleWindow").innerText = APP_NAME;    
+
+    /* set the z-index for all elements */
+    /* benefit of puting here is you can have an overview of all the elements stack */
+    document.getElementById("divHeader").style.zIndex = Z_INDEX_MED;
+    
+    /* move all contents below header bar */
+    document.getElementById("divBody").style.top = document.getElementById("divHeader").clientHeight + 5 + "px";
+}
